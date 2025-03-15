@@ -6,7 +6,7 @@ const sqlite3Verbose = sqlite3.verbose(); // Ensure node-fetch is installed
 let sql;
 //API
 const apiKey = "cf2cfd36-d955-4950-aee0-83c7b3f5ff9b";
-let numberOfArticles = 2;
+let numberOfArticles = 10;
 
 // AWANLLM API Configuration
 const AWANLLM_API_KEY = apiKey;
@@ -34,6 +34,10 @@ export async function scraperProduct(url) {
     const titles = await page.$$(".Card-title");
 
     if (titles[i]) {
+      // ensures no duplicate articles
+      if (titles[i] in all_Data) {
+        return;
+      }
       const titleText = await page.evaluate((el) => el.innerText, titles[i]);
       console.log(`Scraping: ${titleText}`);
 
@@ -46,7 +50,6 @@ export async function scraperProduct(url) {
           .join(" ")
           .replace(/\s+/g, " ");
       });
-
       all_Data[titleText] = currentArticleData;
     }
 
@@ -106,9 +109,10 @@ export async function summarizeAndDB(art) {
   for (let i = 0; i < numberOfArticles; i++) {
     const articleTitle = keys[i];
     const articleContent = art[articleTitle];
-    console.log(`Summarizing article: ${articleTitle}`);
+    // console.log(`Summarizing article: ${articleTitle}`);
     const summary = await summarizeParagraph(articleContent);
     finalProduct[articleTitle] = summary;
+
     /// INSERTING TO DB
     sql = `INSERT INTO data(article_name, article_summary) VALUES (?, ?)`;
     db.run(sql, [articleTitle, summary.slice(36, -1)], (err) => {
@@ -131,6 +135,8 @@ export const emptyDB = function () {
     if (err) return console.error(err.message);
   });
 };
+
+emptyDB();
 
 /// ALL DB SHIT
 /*
