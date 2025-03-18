@@ -6,7 +6,7 @@ const sqlite3Verbose = sqlite3.verbose(); // Ensure node-fetch is installed
 let sql;
 //API
 const apiKey = "cf2cfd36-d955-4950-aee0-83c7b3f5ff9b";
-let numberOfArticles = 10;
+let numberOfArticles = 5;
 
 // AWANLLM API Configuration
 const AWANLLM_API_KEY = apiKey;
@@ -131,6 +131,7 @@ export async function summarizeAndDB(art) {
 
 export const emptyDB = function () {
   sql = `DELETE FROM data`;
+  console.log("empting");
   db.run(sql, [], (err) => {
     if (err) return console.error(err.message);
   });

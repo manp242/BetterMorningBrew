@@ -8,8 +8,8 @@ console.log("Starting cron job that runs every 5 seconds...");
 // });
 
 /// rungs every second
-const taskHourly = nodeCron.schedule("*/1 * * * * *", () => {
-  console.log(`running task every hour`);
+const taskHourly = nodeCron.schedule("*/5 * * * * *", () => {
+  console.log(`running task every min`);
 });
 
 /// starts running the task
@@ -19,4 +19,4 @@ taskHourly.start();
 setTimeout(() => {
   console.log("Stopping the hourly task");
   taskHourly.stop();
-}, 6000);
+}, 600000);
