@@ -1,22 +1,17 @@
-import { scraperProduct } from "./scrapper.js";
+import { scraperProduct, sendEmail } from "./scrapper.js";
 import { summarizeAndDB } from "./scrapper.js";
 import nodeCron from "node-cron";
 import { emptyDB } from "./scrapper.js"; // Ensure node-fetch is installed
+import { main } from "./email.js";
 
 let numberOfArticles = 10;
 let url = "https://www.cnbc.com/technology/";
 
 const projectRunner = async function () {
-  console.log("hi");
-
   let scrappedArticles = await scraperProduct(url);
-  await summarizeAndDB(scrappedArticles);
-  //// runs every one
-  const taskHourly = nodeCron.schedule("*/45 * * * *", async () => {
-    scrappedArticles = await scraperProduct(url);
-    await summarizeAndDB(scrappedArticles);
-  });
-  taskHourly.start();
+  let dataToSend = await summarizeAndDB(scrappedArticles);
+  // console.log(dataToSend);
+  await main(dataToSend);
 
   setTimeout(() => {
     console.log("Stopping the hourly task");

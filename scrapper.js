@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import puppeteer from "puppeteer";
 import fetch from "node-fetch";
-
+import nodemailer from "nodemailer";
 const sqlite3Verbose = sqlite3.verbose(); // Ensure node-fetch is installed
 let sql;
 //API
@@ -67,7 +67,7 @@ async function summarizeParagraph(paragraph) {
       { role: "system", content: "You are a helpful assistant." },
       {
         role: "user",
-        content: `Please summarize the following paragraph:\n\n${paragraph}`,
+        content: `Please summarize the following paragraph and dont say anything else like here's the summary: or whatever just the summary: \n\n${paragraph}`,
       },
     ],
     temperature: 0.7,
@@ -103,7 +103,6 @@ async function summarizeParagraph(paragraph) {
 export async function summarizeAndDB(art) {
   let finalProduct = {}; // Moved finalProduct outside loop to store all articles
   const keys = Object.keys(art);
-  console.log(keys);
 
   // looping thru each article and article summary at a time
   for (let i = 0; i < numberOfArticles; i++) {
@@ -126,7 +125,37 @@ export async function summarizeAndDB(art) {
       console.log(row);
     });
   });
+  // console.log("STRINGIFIED" + JSON.stringify(finalProduct));
+  // console.log(JSON.stringify(finalProduct).split(":"));
   return finalProduct;
+}
+
+export function sendEmail(data) {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+      user: "patelman242@gmail.com",
+      pass: googleKey,
+    },
+  });
+  // async..await is not allowed in global scope, must use a wrapper
+  async function main() {
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: "<patelman242@gmail.com>", // sender address
+      to: "patelman242@gmail.com", // list of receivers
+      subject: "WSUPP", // Subject line
+      text: "Hello world?", // plain text body
+      html: `${transformingData()}`, // html body
+    });
+
+    console.log("Message sent: %s", data);
+    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
+  }
+
+  main().catch(console.error);
 }
 
 export const emptyDB = function () {
@@ -137,7 +166,7 @@ export const emptyDB = function () {
   });
 };
 
-emptyDB();
+// emptyDB();
 
 /// ALL DB SHIT
 /*
