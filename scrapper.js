@@ -67,7 +67,7 @@ async function summarizeParagraph(paragraph) {
       { role: "system", content: "You are a helpful assistant." },
       {
         role: "user",
-        content: `Please summarize the following paragraph and dont say anything else like here's the summary: or whatever just the summary: \n\n${paragraph}`,
+        content: `Please summarize the following paragraph make the summary atleast 3-4 senteneces and dont say anything else like here's the summary: or whatever just the summary: \n\n${paragraph}`,
       },
     ],
     temperature: 0.7,
@@ -114,7 +114,7 @@ export async function summarizeAndDB(art) {
 
     /// INSERTING TO DB
     sql = `INSERT INTO data(article_name, article_summary) VALUES (?, ?)`;
-    db.run(sql, [articleTitle, summary.slice(36, -1)], (err) => {
+    db.run(sql, [articleTitle, summary], (err) => {
       if (err) return console.error(err.message);
     });
   }
@@ -128,34 +128,6 @@ export async function summarizeAndDB(art) {
   // console.log("STRINGIFIED" + JSON.stringify(finalProduct));
   // console.log(JSON.stringify(finalProduct).split(":"));
   return finalProduct;
-}
-
-export function sendEmail(data) {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-      user: "patelman242@gmail.com",
-      pass: googleKey,
-    },
-  });
-  // async..await is not allowed in global scope, must use a wrapper
-  async function main() {
-    // send mail with defined transport object
-    const info = await transporter.sendMail({
-      from: "<patelman242@gmail.com>", // sender address
-      to: "patelman242@gmail.com", // list of receivers
-      subject: "WSUPP", // Subject line
-      text: "Hello world?", // plain text body
-      html: `${transformingData()}`, // html body
-    });
-
-    console.log("Message sent: %s", data);
-    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-  }
-
-  main().catch(console.error);
 }
 
 export const emptyDB = function () {
