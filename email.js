@@ -4,7 +4,8 @@ import nodemailer from "nodemailer";
 import nodeCron from "node-cron";
 
 const googleKey = process.env.GOOGLE_PASS;
-const timeToSend = "49 12 * * *";
+const timeToSend = "20 16 * * *";
+console.log(timeToSend);
 const art = function (articles) {
   if (!articles) return "";
   let html = `
@@ -57,6 +58,7 @@ const CONFIG = {
 
 export async function main(articles) {
   const transporter = nodemailer.createTransport(CONFIG.tranpost);
+
   nodeCron.schedule(timeToSend, async () => {
     // send mail with defined transport object
     if (!articles) {

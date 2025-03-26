@@ -6,7 +6,7 @@ const sqlite3Verbose = sqlite3.verbose(); // Ensure node-fetch is installed
 let sql;
 //API
 const apiKey = "cf2cfd36-d955-4950-aee0-83c7b3f5ff9b";
-let numberOfArticles = 5;
+let numberOfArticles = 2;
 
 // AWANLLM API Configuration
 const AWANLLM_API_KEY = apiKey;
@@ -35,11 +35,13 @@ export async function scraperProduct(url) {
 
     if (titles[i]) {
       // ensures no duplicate articles
-      if (titles[i] in all_Data) {
-        return;
-      }
+
       const titleText = await page.evaluate((el) => el.innerText, titles[i]);
       console.log(`Scraping: ${titleText}`);
+      if (titleText in all_Data) {
+        console.log("already in data");
+        return;
+      }
 
       await titles[i].click();
       await page.waitForSelector(".group", { timeout: 5000 }).catch(() => {});
@@ -104,11 +106,11 @@ export async function summarizeAndDB(art) {
   let finalProduct = {}; // Moved finalProduct outside loop to store all articles
   const keys = Object.keys(art);
 
-  // looping thru each article and article summary at a time
-  for (let i = 0; i < numberOfArticles; i++) {
+  //// looping thru all of the articles
+  for (let i = 0; i < keys.length; i++) {
     const articleTitle = keys[i];
     const articleContent = art[articleTitle];
-    // console.log(`Summarizing article: ${articleTitle}`);
+    console.log(`Summarizing article: ${articleTitle}`);
     const summary = await summarizeParagraph(articleContent);
     finalProduct[articleTitle] = summary;
 
@@ -138,7 +140,7 @@ export const emptyDB = function () {
   });
 };
 
-// emptyDB();
+emptyDB();
 
 /// ALL DB SHIT
 /*
