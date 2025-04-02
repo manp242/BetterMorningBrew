@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 import nodeCron from "node-cron";
 
 const googleKey = process.env.GOOGLE_PASS;
-const timeToSend = "20 16 * * *";
+const timeToSend = "24 0 * * *";
 console.log(timeToSend);
 const art = function (articles) {
   if (!articles) return "";
@@ -58,7 +58,7 @@ const CONFIG = {
 
 export async function main(articles) {
   const transporter = nodemailer.createTransport(CONFIG.tranpost);
-
+  console.log("inside main");
   nodeCron.schedule(timeToSend, async () => {
     // send mail with defined transport object
     if (!articles) {
@@ -70,8 +70,4 @@ export async function main(articles) {
   }),
     { scheduled: true, timezone: "America/New_York" };
 }
-
-// Only call main if this file is being run directly
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  main().catch(console.error);
-}
+main().catch(console.error);

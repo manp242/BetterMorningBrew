@@ -6,7 +6,7 @@ const sqlite3Verbose = sqlite3.verbose(); // Ensure node-fetch is installed
 let sql;
 //API
 const apiKey = "cf2cfd36-d955-4950-aee0-83c7b3f5ff9b";
-let numberOfArticles = 2;
+let numberOfArticles = 10;
 
 // AWANLLM API Configuration
 const AWANLLM_API_KEY = apiKey;
@@ -28,14 +28,13 @@ export async function scraperProduct(url) {
 
   let all_Data = {};
 
-  // Scrape first article only
+  // Scrape the articles only
   for (let i = 0; i < numberOfArticles; i++) {
     await page.waitForSelector(".Card-title");
     const titles = await page.$$(".Card-title");
 
     if (titles[i]) {
       // ensures no duplicate articles
-
       const titleText = await page.evaluate((el) => el.innerText, titles[i]);
       console.log(`Scraping: ${titleText}`);
       if (titleText in all_Data) {
@@ -105,7 +104,6 @@ async function summarizeParagraph(paragraph) {
 export async function summarizeAndDB(art) {
   let finalProduct = {}; // Moved finalProduct outside loop to store all articles
   const keys = Object.keys(art);
-
   //// looping thru all of the articles
   for (let i = 0; i < keys.length; i++) {
     const articleTitle = keys[i];

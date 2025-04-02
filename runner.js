@@ -21,6 +21,7 @@ let url = "https://www.cnbc.com/technology/";
 // projectRunner();
 
 const ffn = async function () {
+  console.log("inside ffn");
   if (scrappedArticles != undefined) {
     let dataToSend = await summarizeAndDB(scrappedArticles);
     await main(dataToSend);
@@ -29,14 +30,13 @@ const ffn = async function () {
 };
 let scrappedArticles;
 let i = 0;
-////////////////////////// scrapes every 20 seconds
-let job = nodeCron.schedule("*/20 * * * * *", async () => {
-  console.log("ihihash");
+////////////////////////// scrapes every 30 minutes
+let job = nodeCron.schedule("*/1 * * * *", async () => {
   scrappedArticles = await scraperProduct(url);
   i++;
-  console.log("umm" + i);
-  //////// run is 3 times from i=0, i=1, i=2
-  if (i == 2) {
+  console.log("running" + i + "time");
+  //////// run is 5 times from i=0, i=1, i=2.... so for 30 * 4 = 2 hours
+  if (i == 4) {
     ffn();
     job.stop();
   }
