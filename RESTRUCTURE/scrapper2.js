@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import summarizer from "./summarizer.js";
 import { By, Builder, Browser } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
@@ -45,7 +47,7 @@ export async function scrapper(url) {
       .findElement(By.css(`time[data-testid="published-timestamp"]`))
       .getAttribute("datetime");
 
-    console.log(temp);
+    // console.log(temp);
     INFO.push(temp);
     await page.navigate().back();
   }

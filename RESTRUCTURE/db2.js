@@ -15,12 +15,13 @@ export default async function addingToDB(items) {
   console.log("in addingDB");
   for (const item of items) {
     /// item is each { articleUrl: "...", id: 1, articleName: "...", }
-    console.log(item);
+    // select all the articlesNames
     sql = `SELECT articleName FROM dataTable`;
     db.all(sql, [], (err, rows) => {
       if (err) return console.error(err.message);
+      //// get a array for all the articleNames
       const existingNames = rows.map((r) => r.articleName);
-      console.log(existingNames);
+      // console.log(existingNames);
       if (!existingNames.includes(item.articleName)) {
         sql = `INSERT INTO dataTable(articleName, summarizedArticle, articleTime, articleUrl) VALUES (?,?,?,?)`;
         db.run(
@@ -38,6 +39,4 @@ export default async function addingToDB(items) {
       }
     });
   }
-  // check if already in db
-  // add into db
 }

@@ -32,6 +32,7 @@ const art = function (articles) {
             </td>
         </tr>`;
   }
+  console.log(html);
   return html;
 };
 
@@ -57,8 +58,8 @@ const CONFIG = {
 };
 
 export async function main(articles) {
+  console.log(CONFIG.info(articles));
   const transporter = nodemailer.createTransport(CONFIG.tranpost);
-  console.log("inside main");
   nodeCron.schedule(timeToSend, async () => {
     // send mail with defined transport object
     if (!articles) {
